@@ -20,13 +20,15 @@ export class UserService {
     }
 
     async createUser(dto: CreateUserDto, image): Promise<User> {
-        const imagePath = this.fileService.saveFiles(FileType.IMAGE, FileDescription.AVATAR, image, null)
-        return await this.userModel.create({...dto, avatarUrl: imagePath});
+        const user = await this.userModel.create({...dto});
+        user.avatarUrl = this.fileService.saveFiles(FileType.IMAGE, FileDescription.AVATAR, image, user.username).join();
+        await user.save();
+        return user;
     }
 
     async deleteUser(id: ObjectId): Promise<ObjectId> {
         const user = await this.userModel.findByIdAndDelete(id);
-        this.fileService.removeFile(user.avatarUrl);
+        this.fileService.removeFile([user.avatarUrl]);
         return user._id;
     }
 
