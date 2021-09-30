@@ -24,7 +24,7 @@ export class UserController {
         name: 'image', maxCount: 1
     }]))
     createUser(@UploadedFiles() files, @Body() dto: CreateUserDto) {
-        return this.userService.createUser(dto, files.image[0]);
+        return this.userService.createUser(dto, files.image);
     }
 
     @Put(':id')

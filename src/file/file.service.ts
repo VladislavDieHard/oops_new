@@ -20,16 +20,12 @@ export class FileService {
             try {
                 const fileExtension = file.originalname.split('.').pop();
                 const fileName = uuid.v4() + '.' + fileExtension;
-                const filePath = path.resolve(__dirname, '..', 'static', type, description);
+                const filePath = path.resolve(__dirname, '..', 'static', type, description, username);
                 if (!fs.existsSync(filePath)) {
                     fs.mkdirSync(filePath, {recursive: true});
                 }
                 fs.writeFileSync(path.resolve(filePath, fileName), file.buffer);
-                if (description === FileDescription.POST){
-                    filePaths.push(type + '/' + description + '/' + username + '/' + fileName);
-                } else {
-                    filePaths.push(type + '/' + description + '/' + fileName);
-                }
+                filePaths.push(type + '/' + description + '/' + username + '/' + fileName);
             } catch (e) {
                 throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -37,11 +33,20 @@ export class FileService {
         return filePaths;
     }
 
-    removeFile(destination: string) {
+    removeFile(destinations: string[]): boolean {
+        let result: boolean = false;
         try {
-            return fs.unlinkSync(path.resolve(__dirname, '..', 'static', destination));
+            destinations.forEach((filePath) => {
+                fs.unlinkSync(path.resolve(__dirname, '..', 'static', filePath));
+            });
+            result = true;
         } catch (e) {
             throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return result;
+    }
+
+    removeDirectories() {
+
     }
 }

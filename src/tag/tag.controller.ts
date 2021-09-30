@@ -24,12 +24,12 @@ export class TagController {
     }
 
     @Put(':id')
-    updateUser(@Param('id') id: ObjectId, @Body() dto: UpdateTagDto) {
+    updateTag(@Param('id') id: ObjectId, @Body() dto: UpdateTagDto) {
         return this.tagService.updateTag(id, dto)
     }
 
     @Delete(':id')
-    deleteUser(@Param('id') id: ObjectId): Promise<ObjectId> {
+    deleteTag(@Param('id') id: ObjectId): Promise<ObjectId> {
         return this.tagService.deleteTag(id);
     }
 }
